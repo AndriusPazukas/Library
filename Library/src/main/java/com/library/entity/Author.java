@@ -24,8 +24,9 @@ public class Author {
     public Author() {
     }
 
-    public Author(String authorName, String dateOfBirth, String nationality) {
+    public Author(int id, String authorName, String dateOfBirth, String nationality) {
         super();
+        this.id = id;
         this.authorName = authorName;
         this.dateOfBirth = dateOfBirth;
         this.nationality = nationality;

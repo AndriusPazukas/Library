@@ -11,7 +11,6 @@ public class Book {
     private int Id;
     @Column(name = "book_name")
     private String name;
-    @Column(name = "author")
     @ManyToOne
     @JoinColumn
     private Author author;

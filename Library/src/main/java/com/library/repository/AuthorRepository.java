@@ -1,4 +1,8 @@
 package com.library.repository;
 
-public interface AuthorRepository {
+import com.library.entity.Author;
+import org.springframework.data.repository.CrudRepository;
+
+public interface AuthorRepository extends CrudRepository<Author, Integer> {
+
 }
