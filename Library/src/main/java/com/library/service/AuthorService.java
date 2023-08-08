@@ -4,35 +4,53 @@ import com.library.entity.Author;
 import com.library.repository.AuthorRepository;
 import com.sun.source.doctree.AuthorTree;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-
+@Service
 public class AuthorService {
 
     @Autowired
     private AuthorRepository authorRepository;
 
-    @PostMapping
-    public @ResponseBody Optional<Author> newAuthor(@RequestParam String name){
-        Optional<Author> author = authorRepository.findById(1);
-        //Optional<Author> author = authorRepository.save();
-        return author;
-        // Why i can not find int id from class Author
-        // Why posting i have to findById author in authorRepository, it seems more that i have to find object by get
+    public Author newAuthor( Author author){
+        Author saved = authorRepository.save(author);
+        return saved;
     }
-    @GetMapping
-    public @ResponseBody Optional<Author> findAuthor(@RequestParam String name){
-        Optional<Author> author = authorRepository.findById(1);
-        return author;
-    }
-    //What does annotations @ResponseBody and @RequestParam mean and do
-    //I do all the methods with authorRepository.findById because i cant find better method there, that would fit better
-    @PatchMapping
-    public @ResponseBody Optional<Author> editAuthor(@RequestParam String name){
-        Optional<Author> author = authorRepository.findById(1);
-        return author;
 
+    public Optional<Author> findAuthor(Integer id){
+        Optional<Author> author = authorRepository.findById(id);
+        return author;
+    }
+
+    @Transactional //significa que en este momento va solo este metodo, por causa varias acciones(find, save..)
+    public Optional<Author> editAuthor(Integer id, Author author){
+        Optional<Author> find = authorRepository.findById(id);
+        if(find.isPresent()) {
+            Author authorBD = find.get(); //valor de Optional
+            authorBD.setAuthorName(author.getAuthorName());
+            authorBD.setDateOfBirth(author.getDateOfBirth());
+            authorBD.setNationality(author.getNationality());
+            Author changed = authorRepository.save(authorBD);
+            return Optional.of(changed);
+        }//uso de optional
+        else{
+            return Optional.empty();
+        }
+
+    }
+    public Optional<Author> deleteAuthor(Integer id){
+        Optional<Author> find = authorRepository.findById(id);
+        if(find.isPresent()){
+            authorRepository.deleteById(id);
+            return Optional.empty();//No sabia lo que debo retornar
+
+        }
+        else{
+            return Optional.empty();
+        }
     }
 
 

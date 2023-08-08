@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class TestController {
 
-    //@RequestMapping(method = RequestMethod.GET)
-
+    @GetMapping("/test")
     @ResponseBody
     public String hi(){
         return "Hi!";
