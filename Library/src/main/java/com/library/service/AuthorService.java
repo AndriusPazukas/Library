@@ -2,12 +2,12 @@ package com.library.service;
 
 import com.library.entity.Author;
 import com.library.repository.AuthorRepository;
-import com.sun.source.doctree.AuthorTree;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 @Service
 public class AuthorService {
@@ -23,6 +23,14 @@ public class AuthorService {
     public Optional<Author> findAuthor(Integer id){
         Optional<Author> author = authorRepository.findById(id);
         return author;
+    }
+    public List<Author> findAllAuthors(){
+        Iterable<Author> allElements = authorRepository.findAll();
+        List<Author> allAuthors = new ArrayList<>();
+        for(Author author: allElements){
+            allAuthors.add(author);
+        }
+        return allAuthors;
     }
 
     @Transactional //significa que en este momento va solo este metodo, por causa varias acciones(find, save..)
@@ -41,15 +49,10 @@ public class AuthorService {
         }
 
     }
-    public Optional<Author> deleteAuthor(Integer id){
+    public void deleteAuthor(Integer id){
         Optional<Author> find = authorRepository.findById(id);
         if(find.isPresent()){
             authorRepository.deleteById(id);
-            return Optional.empty();//No sabia lo que debo retornar
-
-        }
-        else{
-            return Optional.empty();
         }
     }
 

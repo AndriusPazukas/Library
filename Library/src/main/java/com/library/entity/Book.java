@@ -19,10 +19,11 @@ public class Book {
     @Column(name = "quantity")
     private int quantity;
 
+
     public Book(String name, Author author, int price, int quantity){
         super();
         this.name = name;
-        this.author = author;
+        this.author = author;//No se como convertir objeto Author author a un String author para que metodo @Post reconoce nombre de author
         this.price = price;
         this.quantity = quantity;
     }
