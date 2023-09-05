@@ -15,15 +15,17 @@ public class Book {
     @JoinColumn
     private Author author;
     @Column(name = "price")
-    private int price;
+    private double price;
     @Column(name = "quantity")
     private int quantity;
 
+    public Book() {
+    }
 
-    public Book(String name, Author author, int price, int quantity){
+    public Book(String name, Author author, double price, int quantity){
         super();
         this.name = name;
-        this.author = author;//No se como convertir objeto Author author a un String author para que metodo @Post reconoce nombre de author
+        this.author = author;
         this.price = price;
         this.quantity = quantity;
     }
@@ -52,11 +54,11 @@ public class Book {
         this.name = name;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

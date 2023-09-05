@@ -20,14 +20,14 @@ public class AuthorController {
     AuthorService authorService;
 
     @PostMapping(path = "/authors")
-    public @ResponseBody Author postAuthor (@RequestBody Author author){
+    public @ResponseBody ResponseEntity<Author> postAuthor (@RequestBody Author author){
         Author newAuthor = authorService.newAuthor(author);
-        return newAuthor;
+        return new ResponseEntity<>(newAuthor, HttpStatus.CREATED);
     }
     @DeleteMapping(path = "/authors/{id}")
     public ResponseEntity<HttpStatus> deleteAuthor(@PathVariable Integer id){
-        Optional<Author> idExist = authorService.findAuthor(id);
-        if(idExist.isPresent()) {
+        Optional<Author> idExists = authorService.findAuthor(id);
+        if(idExists.isPresent()) {
             authorService.deleteAuthor(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else{
@@ -36,15 +36,15 @@ public class AuthorController {
     }
     @GetMapping(path = "/authors/{id}")
     @ResponseBody
-    public Author getAuthorWithId(@PathVariable Integer id){
-        Optional<Author> authorWithId = authorService.findAuthor(id);
-        if(authorWithId.isPresent()) {
-            return authorWithId.get();
+    public ResponseEntity<Author> getAuthorById(@PathVariable Integer id){
+        Optional<Author> authorById = authorService.findAuthor(id);
+        if(authorById.isPresent()) {
+            return new ResponseEntity<>(authorById.get(),HttpStatus.OK);
         }else{
-            return null;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @GetMapping(path = "/authors/all")
+    @GetMapping(path = "/authors")
     @ResponseBody
     public List<Author> getAllAuthors(){
         List<Author> allAuthorsList = authorService.findAllAuthors();
@@ -52,9 +52,9 @@ public class AuthorController {
     }
     @PutMapping(path = "/authors/{id}")
     @ResponseBody
-    public Author editAuthor(@PathVariable("id") Integer id, @RequestBody Author author){
+    public ResponseEntity<Author> editAuthor(@PathVariable("id") Integer id, @RequestBody Author author){
         Optional<Author> editedAuthor = authorService.editAuthor(id, author);
-        return editedAuthor.get();
+        return new ResponseEntity<>(editedAuthor.get(),HttpStatus.OK);
     }
 
 

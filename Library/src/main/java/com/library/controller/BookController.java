@@ -5,6 +5,8 @@ import com.library.entity.Book;
 import com.library.service.AuthorService;
 import com.library.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -18,28 +20,34 @@ public class BookController {
     BookService bookService;
 
     @PostMapping(path = "/books")
-    public @ResponseBody Book postBook (@RequestBody Book book){
+    public @ResponseBody ResponseEntity<Book> postBook (@RequestBody Book book){
         Book newBook = bookService.newBook(book);
-        return newBook;
+        return new ResponseEntity<>(newBook, HttpStatus.CREATED) ;
     }
     @DeleteMapping(path = "/books/{id}")
-    public void deleteBook(@PathVariable Integer id){
+    public ResponseEntity<HttpStatus> deleteBook(@PathVariable Integer id){
+        Optional<Book> idExists = bookService.findBook(id);
+        if(idExists.isPresent()){
         bookService.deleteBook(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
     @GetMapping(path = "/books/{id}")
     @ResponseBody
-    public Book getBookWithId(@PathVariable Integer id){
-        Optional<Book> bookWithId = bookService.findBook(id);
-        if(bookWithId.isPresent()) {
-            return bookWithId.get();
+    public ResponseEntity<Book> getBookById(@PathVariable Integer id){
+        Optional<Book> bookById = bookService.findBook(id);
+        if(bookById.isPresent()) {
+            return new ResponseEntity<>(bookById.get(),HttpStatus.OK);
         }else{
-            return null;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
     @PutMapping(path = "/books/{id}")
     @ResponseBody
-    public Book editBook(@PathVariable("id") Integer id, @RequestBody Book book){
+    public ResponseEntity<Book> editBook(@PathVariable("id") Integer id, @RequestBody Book book){
         Optional<Book> editedBook = bookService.editBook(id, book);
-        return editedBook.get();
+        return new ResponseEntity<>(editedBook.get(),HttpStatus.OK);
     }
 }

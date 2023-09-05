@@ -25,12 +25,8 @@ public class AuthorService {
         return author;
     }
     public List<Author> findAllAuthors(){
-        Iterable<Author> allElements = authorRepository.findAll();
-        List<Author> allAuthors = new ArrayList<>();
-        for(Author author: allElements){
-            allAuthors.add(author);
-        }
-        return allAuthors;
+        List<Author> allElements = authorRepository.findAll();
+        return allElements;
     }
 
     @Transactional //significa que en este momento va solo este metodo, por causa varias acciones(find, save..)
