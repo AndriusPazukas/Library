@@ -2,11 +2,11 @@ package com.library.service;
 
 import com.library.entity.Author;
 import com.library.repository.AuthorRepository;
+import com.library.specifications.AuthorSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -34,7 +34,8 @@ public class AuthorService {
         Optional<Author> find = authorRepository.findById(id);
         if(find.isPresent()) {
             Author authorBD = find.get(); //valor de Optional
-            authorBD.setAuthorName(author.getAuthorName());
+            authorBD.setName(author.getName());
+            authorBD.setSurname(author.getSurname());
             authorBD.setDateOfBirth(author.getDateOfBirth());
             authorBD.setNationality(author.getNationality());
             Author changed = authorRepository.save(authorBD);
@@ -50,6 +51,14 @@ public class AuthorService {
         if(find.isPresent()){
             authorRepository.deleteById(id);
         }
+    }
+    public List<Author> findAuthorByNationality1(String nationality){
+        List<Author> authorsList = authorRepository.findByNationality(nationality);
+        return authorsList;
+    }
+    public List<Author>findAuthorByNationalityAndSurname(String nationality, String surname){
+        List<Author> authorsList = authorRepository.findAll(AuthorSpecification.getAuthorByNatAndSurname(nationality, surname));
+        return authorsList;
     }
 
 

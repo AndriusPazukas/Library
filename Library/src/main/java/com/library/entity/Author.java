@@ -1,5 +1,6 @@
 package com.library.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -12,21 +13,25 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     @Column(name = "name")
-    private String authorName;
+    private String name;
+    @Column
+    private String surname;
     @Column(name = "date_of_birth")
     private String dateOfBirth;
     @Column
     private String nationality;
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    @JsonManagedReference//para evitar infinidad
     List<Book> books;
 
 
     public Author() {
     }
 
-    public Author(String authorName, String dateOfBirth, String nationality) {
+    public Author(String name,String surname, String dateOfBirth, String nationality) {
         super();
-        this.authorName = authorName;
+        this.name = name;
+        this.surname = surname;
         this.dateOfBirth = dateOfBirth;
         this.nationality = nationality;
 
@@ -36,12 +41,20 @@ public class Author {
         return id;
     }
 
-    public String getAuthorName() {
-        return authorName;
+    public String getName() {
+        return name;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getDateOfBirth() {

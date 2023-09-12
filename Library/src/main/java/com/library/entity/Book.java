@@ -1,5 +1,6 @@
 package com.library.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,7 @@ public class Book {
     private String name;
     @ManyToOne
     @JoinColumn
+    @JsonBackReference//para evitar infinidad
     private Author author;
     @Column(name = "price")
     private double price;

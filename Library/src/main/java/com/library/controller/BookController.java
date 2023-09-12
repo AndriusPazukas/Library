@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -49,5 +50,11 @@ public class BookController {
     public ResponseEntity<Book> editBook(@PathVariable("id") Integer id, @RequestBody Book book){
         Optional<Book> editedBook = bookService.editBook(id, book);
         return new ResponseEntity<>(editedBook.get(),HttpStatus.OK);
+    }
+    @GetMapping(path = "/books")
+    @ResponseBody
+    public List<Book> getAllBooks(){
+        List<Book> allBooksList = bookService.findAllBooks();
+        return allBooksList;
     }
 }

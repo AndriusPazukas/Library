@@ -5,7 +5,6 @@ import com.library.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +53,23 @@ public class AuthorController {
     @ResponseBody
     public ResponseEntity<Author> editAuthor(@PathVariable("id") Integer id, @RequestBody Author author){
         Optional<Author> editedAuthor = authorService.editAuthor(id, author);
-        return new ResponseEntity<>(editedAuthor.get(),HttpStatus.OK);
+        if(editedAuthor.isPresent()) {
+            return new ResponseEntity<>(editedAuthor.get(), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping(path = "/authors/nationality/{nationality}")
+    @ResponseBody
+    public List<Author> getAuthorByNationality1(@PathVariable String nationality){
+        List<Author> authorsByNationality = authorService.findAuthorByNationality1(nationality);
+        return authorsByNationality;
+    }
+    @GetMapping(path = "/authors/nationalitySurname/{nationality}/{surname}")
+    @ResponseBody
+    public List<Author> getAuthorsByNationalityAndSurname(@PathVariable String nationality, @PathVariable String surname){
+        List<Author> authorServiceAuthorByNationalityAndSurname = authorService.findAuthorByNationalityAndSurname(nationality, surname);
+        return authorServiceAuthorByNationalityAndSurname;
     }
 
 
