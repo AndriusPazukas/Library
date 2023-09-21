@@ -24,9 +24,18 @@ public class AuthorService {
         Optional<Author> author = authorRepository.findById(id);
         return author;
     }
-    public List<Author> findAllAuthors(){
-        List<Author> allElements = authorRepository.findAll();
-        return allElements;
+    public List<Author> findAllAuthors(String surname, String nationality){
+        List<Author> authors;
+        if(surname == null && nationality == null){
+            authors = authorRepository.findAll();
+        }else if(surname == null && nationality != null){
+            authors = authorRepository.findByNationality(nationality);
+        }else if(surname != null && nationality == null){
+            authors = authorRepository.findBySurname(surname);
+        }else{
+            authors = authorRepository.findBySurnameAndNationality(surname, nationality);
+        }
+        return authors;
     }
 
     @Transactional //significa que en este momento va solo este metodo, por causa varias acciones(find, save..)

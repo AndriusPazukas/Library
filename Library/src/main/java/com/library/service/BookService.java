@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +35,7 @@ public class BookService {
         if(find.isPresent()) {
             Book bookBD = find.get(); //valor de Optional
             bookBD.setAuthor(book.getAuthor());
-            bookBD.setName(book.getName());
+            bookBD.setTitle(book.getTitle());
             bookBD.setPrice(book.getPrice());
             bookBD.setQuantity(book.getQuantity());
             Book changed = bookRepository.save(bookBD);
@@ -47,11 +50,39 @@ public class BookService {
         Optional<Book> find = bookRepository.findById(id);
         if(find.isPresent()){
             bookRepository.deleteById(id);
+
         }
     }
-    public List<Book> findAllBooks(){
-        List<Book> allElements = bookRepository.findAll();
-        return allElements;
+
+
+    public List<Book> findAllBooks(String authorSurname, BigDecimal minBookPrice, BigDecimal maxBookPrice){
+        List<Book> books;
+        if(authorSurname != null){
+            books = bookRepository.findByAuthorSurname2(authorSurname);
+        }
+        else if(minBookPrice != null ){
+            books = bookRepository.findByPrice(minBookPrice);
+            Collections.sort(books, new Comparator<Book>() {
+                @Override
+                public int compare(Book b1, Book b2) {
+                    return b1.getPrice().compareTo(b2.getPrice());
+                }
+            });
+        }
+        else if(maxBookPrice != null){
+            books = bookRepository.findByPrice2(maxBookPrice);
+            Collections.sort(books, new Comparator<Book>() {
+                @Override
+                public int compare(Book b1, Book b2) {
+                    return b1.getPrice().compareTo(b2.getPrice());
+                }
+            });
+        }
+        else{
+            books = bookRepository.findAll();
+        }
+        return books;
+
     }
 
 

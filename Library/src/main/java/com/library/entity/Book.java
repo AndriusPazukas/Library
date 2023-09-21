@@ -3,6 +3,8 @@ package com.library.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table
 public class Book {
@@ -11,22 +13,22 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
     @Column(name = "book_name")
-    private String name;
+    private String title;
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "author_id")
     @JsonBackReference//para evitar infinidad
     private Author author;
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
     @Column(name = "quantity")
     private int quantity;
 
     public Book() {
     }
 
-    public Book(String name, Author author, double price, int quantity){
+    public Book(String title, Author author, BigDecimal price, int quantity){
         super();
-        this.name = name;
+        this.title = title;
         this.author = author;
         this.price = price;
         this.quantity = quantity;
@@ -40,8 +42,8 @@ public class Book {
         Id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public Author getAuthor() {
@@ -52,15 +54,15 @@ public class Book {
         this.author = author;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

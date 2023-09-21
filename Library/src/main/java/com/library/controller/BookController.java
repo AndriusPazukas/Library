@@ -1,14 +1,14 @@
 package com.library.controller;
 
-import com.library.entity.Author;
 import com.library.entity.Book;
-import com.library.service.AuthorService;
 import com.library.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,8 +53,10 @@ public class BookController {
     }
     @GetMapping(path = "/books")
     @ResponseBody
-    public List<Book> getAllBooks(){
-        List<Book> allBooksList = bookService.findAllBooks();
+    public List<Book> getAllBooks(@RequestParam(required = false) String authorSurname,
+                                  @RequestParam(required = false) BigDecimal minBookPrice,
+                                  @RequestParam(required = false) BigDecimal maxBookPrice){
+        List<Book> allBooksList = bookService.findAllBooks(authorSurname, minBookPrice, maxBookPrice);
         return allBooksList;
     }
 }

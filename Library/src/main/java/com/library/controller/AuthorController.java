@@ -45,8 +45,9 @@ public class AuthorController {
     }
     @GetMapping(path = "/authors")
     @ResponseBody
-    public List<Author> getAllAuthors(){
-        List<Author> allAuthorsList = authorService.findAllAuthors();
+    public List<Author> getAllAuthors(@RequestParam(required = false) String surname,
+                                      @RequestParam(required = false) String nationality){
+        List<Author> allAuthorsList = authorService.findAllAuthors(surname, nationality);
         return allAuthorsList;
     }
     @PutMapping(path = "/authors/{id}")
