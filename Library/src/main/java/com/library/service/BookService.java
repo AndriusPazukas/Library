@@ -1,6 +1,5 @@
 package com.library.service;
 
-import com.library.entity.Author;
 import com.library.entity.Book;
 import com.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,28 +52,22 @@ public class BookService {
     }
 
 
-    public List<Book> findAllBooks(String authorSurname, BigDecimal minBookPrice, BigDecimal maxBookPrice){
+    public List<Book> findAllBooks(String authorSurname, BigDecimal minPrice, BigDecimal maxPrice, String priceOrder){
         List<Book> books;
-        if(authorSurname != null){
-            books = bookRepository.findByAuthorSurname2(authorSurname);
+        if(authorSurname != null && "ASC".equals(priceOrder)){//pirma string kad neuzluztu kodas
+            books = bookRepository.findByAuthorSurnamePriceAsc(authorSurname);
         }
-        else if(minBookPrice != null ){
-            books = bookRepository.findByPrice(minBookPrice);
-            Collections.sort(books, new Comparator<Book>() {
-                @Override
-                public int compare(Book b1, Book b2) {
-                    return b1.getPrice().compareTo(b2.getPrice());
-                }
-            });
+        else if(authorSurname != null && "DESC".equals(priceOrder)){//pirma string kad neuzluztu kodas
+            books = bookRepository.findByAuthorSurnamePriceDesc(authorSurname);
         }
-        else if(maxBookPrice != null){
-            books = bookRepository.findByPrice2(maxBookPrice);
-            Collections.sort(books, new Comparator<Book>() {
-                @Override
-                public int compare(Book b1, Book b2) {
-                    return b1.getPrice().compareTo(b2.getPrice());
-                }
-            });
+        else if(minPrice != null && maxPrice == null){
+            books = bookRepository.findByPrice1(minPrice);
+        }
+        else if(maxPrice != null && minPrice == null){
+            books = bookRepository.findByPrice2(maxPrice);
+        }
+        else if(minPrice != null && maxPrice != null){
+            books = bookRepository.findByPrice(minPrice, maxPrice);
         }
         else{
             books = bookRepository.findAll();

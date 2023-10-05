@@ -2,6 +2,8 @@ package com.library.controller;
 
 import com.library.entity.Book;
 import com.library.service.BookService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,9 @@ public class BookController {
 
     @Autowired
     BookService bookService;
+
+
+    Logger logger = LoggerFactory.getLogger(BookController.class);
 
     @PostMapping(path = "/books")
     public @ResponseBody ResponseEntity<Book> postBook (@RequestBody Book book){
@@ -40,8 +45,10 @@ public class BookController {
     public ResponseEntity<Book> getBookById(@PathVariable Integer id){
         Optional<Book> bookById = bookService.findBook(id);
         if(bookById.isPresent()) {
+            logger.info("Book found id '{}' title '{}'", id, bookById.get().getTitle());
             return new ResponseEntity<>(bookById.get(),HttpStatus.OK);
         }else{
+            logger.error("Book with id '{}' not found", id);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -54,9 +61,10 @@ public class BookController {
     @GetMapping(path = "/books")
     @ResponseBody
     public List<Book> getAllBooks(@RequestParam(required = false) String authorSurname,
-                                  @RequestParam(required = false) BigDecimal minBookPrice,
-                                  @RequestParam(required = false) BigDecimal maxBookPrice){
-        List<Book> allBooksList = bookService.findAllBooks(authorSurname, minBookPrice, maxBookPrice);
+                                  @RequestParam(required = false) BigDecimal minPrice,
+                                  @RequestParam(required = false) BigDecimal maxPrice,
+                                  @RequestParam(required = false) String priceOrder){
+        List<Book> allBooksList = bookService.findAllBooks(authorSurname, minPrice, maxPrice, priceOrder);
         return allBooksList;
     }
 }
