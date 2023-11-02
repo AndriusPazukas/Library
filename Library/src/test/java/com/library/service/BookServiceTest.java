@@ -110,4 +110,90 @@ class BookServiceTest {
         verify(bookRepository).findByAuthorSurnamePriceAsc("Pazukas");
         verify(bookRepository, times(0)).findAll();
     }
+
+    @Test
+    void findAllBooksWithAuthorAndPriceOrderDesc(){
+        when(bookRepository.findByAuthorSurnamePriceDesc("Pazukas")).thenReturn(books);
+        //when
+        List<Book> result = bookService.findAllBooks("Pazukas",null,null,"DESC");
+        //then
+        assertEquals(result, books);
+        verify(bookRepository).findByAuthorSurnamePriceDesc("Pazukas");
+        verify(bookRepository, times(0)).findAll();
+    }
+
+    @Test
+    void findAllBooksByMinPrice(){
+        when(bookRepository.findByPrice1(BigDecimal.valueOf(20.0))).thenReturn(books);
+        //when
+        List<Book> result = bookService.findAllBooks(null, BigDecimal.valueOf(20.0),null, null);
+        //then
+        assertEquals(result, books);
+        verify(bookRepository).findByPrice1(BigDecimal.valueOf(20.0));
+        verify(bookRepository, times(0)).findAll();
+        verify(bookRepository, times(0)).findByPrice(any(BigDecimal.class), any(BigDecimal.class));//solo con any() tambien vale
+
+    }
+
+    @Test
+    void findAllBooksByMaxPrice(){
+        when(bookRepository.findByPrice2(BigDecimal.valueOf(30.0))).thenReturn(books);
+        //when
+        List<Book> result = bookService.findAllBooks(null, null, BigDecimal.valueOf(30.0),null);
+        //then
+        assertEquals(result, books);
+        verify(bookRepository).findByPrice2(BigDecimal.valueOf(30.0));
+        verify(bookRepository, times(0)).findAll();
+    }
+
+    @Test
+    void findAllBooksByMinAndMaxPrice(){
+        when(bookRepository.findByPrice(BigDecimal.valueOf(10.0), BigDecimal.valueOf(40.0))).thenReturn(books);
+        //when
+        List<Book> result = bookService.findAllBooks(null, BigDecimal.valueOf(10.0), BigDecimal.valueOf(40.0),null);
+        //then
+        assertEquals(result, books);
+        verify(bookRepository).findByPrice(BigDecimal.valueOf(10.0), BigDecimal.valueOf(40.0));
+        verify(bookRepository,times(0)).findAll();
+    }
+
+    @Test
+    void findAllBooks(){
+        when(bookRepository.findAll()).thenReturn(books);
+        //when
+        List<Book> result = bookService.findAllBooks(null,null,null,null);
+        //then
+        assertEquals(result, books);
+        verify(bookRepository).findAll();
+    }
+
+    @Test
+    void editBook(){
+        Optional<Book> bookOptional = Optional.of(book1);
+        when(bookRepository.findById(1)).thenReturn(bookOptional);
+        when(bookRepository.save(any())).thenReturn(book1);
+        //when
+        Book editedBook = new Book("TitleEdited", author2, BigDecimal.valueOf(30.0), 15   );
+        Optional<Book> result = bookService.editBook(1, editedBook);
+        //then
+        assertEquals(result, bookOptional);
+        assertEquals(result.get().getTitle(), "TitleEdited");
+        assertEquals(result.get().getAuthor(), author2);
+        assertEquals(result.get().getPrice(), BigDecimal.valueOf(30.0));
+        assertEquals(result.get().getQuantity(), 15);
+        verify(bookRepository).findById(1);
+        verify(bookRepository).save(book1);
+    }
+
+    @Test
+    void editBookIfNotPresent(){
+        Optional<Book> bookOptional1 = Optional.empty();
+        when(bookRepository.findById(1)).thenReturn(bookOptional1);
+        //when
+        Optional<Book> result = bookService.editBook(1,null);
+        //then
+        assertEquals(result, bookOptional1);
+        verify(bookRepository).findById(1);
+        verify(bookRepository, times(0)).save(any());
+    }
 }
