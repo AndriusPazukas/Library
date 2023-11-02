@@ -22,8 +22,8 @@ public class BookService {
     }
 
     public Optional<Book> findBook(Integer id){
-        Optional<Book> author = bookRepository.findById(id);
-        return author;
+        Optional<Book> book = bookRepository.findById(id);
+        return book;
     }
 
     @Transactional //significa que en este momento va solo este metodo, por causa varias acciones(find, save..)
@@ -45,10 +45,10 @@ public class BookService {
     }
     public void deleteBook(Integer id){
         Optional<Book> find = bookRepository.findById(id);
-        if(find.isPresent()){
+         if(find.isPresent()){
             bookRepository.deleteById(id);
 
-        }
+       }
     }
 
 
