@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -24,9 +25,12 @@ import static org.mockito.Mockito.verify;
 class AuthorServiceTest {
 
     @Mock private AuthorRepository authorRepository;
+    @Mock private AuthorSpecification authorSpecification;
 
     @InjectMocks
     private AuthorService authorService;
+
+
 
     Author author1, author2, author3, author4, author5, savedAuthor1;
 
@@ -148,15 +152,33 @@ class AuthorServiceTest {
         verify(authorRepository).save(author1);
 
     }
-    @Test
-    void findAuthorByNationalityAndSurname(){
-        Specification<Author> input = AuthorSpecification.getAuthorByNatAndSurname("Lithuanian", "Pazukas");
-        when(authorRepository.findAll(input)).thenReturn(any());
+
+   @Test
+    void findAuthorByNationalityAndSurname1(){
+        //Specification<Author> input = AuthorSpecification.getAuthorByNatAndSurname("Lithuanian", "Pazukas");
+        when(authorRepository.findAll((Specification<Author>) any())).thenReturn(authors);
         //when
         List<Author> result = authorService.findAuthorByNationalityAndSurname("Lithuanian", "Pazukas");
         //then
         assertEquals(result, authors);
-        verify(authorRepository).findAll(any(Specification.class));
+        verify(authorRepository).findAll((Specification<Author>) any());
+        verify(authorRepository, times (0)).findBySurnameAndNationality("Pazukas", "Lithuanian");
+    }
+
+    @Test
+    void findAuthorByNationalityAndSurname2(){
+        Specification<Author> specification = Mockito.mock(Specification.class);
+        when(authorSpecification.getAuthorByNatAndSurname("Lithuanian", "Pazukas")).thenReturn(specification);
+        when(authorRepository.findAll(specification)).thenReturn(authors);
+        //when
+        List<Author> result = authorService.findAuthorByNationalityAndSurname("Lithuanian", "Pazukas");
+        List<Author> result1 = authorService.findAuthorByNationalityAndSurname("English", "Shakespeare");
+        //then
+        assertEquals(result, authors);
+        assertNotEquals(result1, authors);
+        verify(authorSpecification).getAuthorByNatAndSurname("Lithuanian", "Pazukas");
+        verify(authorRepository).findAll(specification);
+        verify(authorRepository, times (0)).findAll();
         verify(authorRepository, times (0)).findBySurnameAndNationality("Pazukas", "Lithuanian");
 
     }
@@ -165,4 +187,5 @@ class AuthorServiceTest {
     void testFindAuthorByNationalityAndSurname() {
 
     }
+    //Test integral con MockMVC
 }

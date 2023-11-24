@@ -14,6 +14,9 @@ public class AuthorService {
 
     @Autowired
     private AuthorRepository authorRepository;
+    @Autowired
+    private AuthorSpecification authorSpecification;
+
 
     public Author newAuthor( Author author){
         Author saved = authorRepository.save(author);
@@ -66,7 +69,7 @@ public class AuthorService {
         return authorsList;
     }
     public List<Author>findAuthorByNationalityAndSurname(String nationality, String surname){
-        List<Author> authorsList = authorRepository.findAll(AuthorSpecification.getAuthorByNatAndSurname(nationality, surname));
+        List<Author> authorsList = authorRepository.findAll(authorSpecification.getAuthorByNatAndSurname(nationality, surname));
         return authorsList;
     }
 

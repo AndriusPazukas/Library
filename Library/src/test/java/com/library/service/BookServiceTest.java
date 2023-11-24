@@ -38,6 +38,7 @@ class BookServiceTest {
     Author author1, author2;
 
     List<Book> books;
+
     @BeforeEach
     void setUp() {
         author1 = new Author();
@@ -190,7 +191,7 @@ class BookServiceTest {
         Optional<Book> bookOptional1 = Optional.empty();
         when(bookRepository.findById(1)).thenReturn(bookOptional1);
         //when
-        Optional<Book> result = bookService.editBook(1,null);
+        Optional<Book> result = bookService.editBook(1,book1);
         //then
         assertEquals(result, bookOptional1);
         verify(bookRepository).findById(1);
