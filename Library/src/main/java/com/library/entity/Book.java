@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -72,5 +73,19 @@ public class Book {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        boolean equals = Id == book.Id && quantity == book.quantity && title.equals(book.title) && price.equals(book.price);
+        return equals;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Id, title, price, quantity);
     }
 }

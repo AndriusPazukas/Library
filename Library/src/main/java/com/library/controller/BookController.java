@@ -56,15 +56,19 @@ public class BookController {
     @ResponseBody
     public ResponseEntity<Book> editBook(@PathVariable("id") Integer id, @RequestBody Book book){
         Optional<Book> editedBook = bookService.editBook(id, book);
-        return new ResponseEntity<>(editedBook.get(),HttpStatus.OK);
+        if(editedBook.isPresent()) {
+            return new ResponseEntity<>(editedBook.get(), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
     @GetMapping(path = "/books")
     @ResponseBody
-    public List<Book> getAllBooks(@RequestParam(required = false) String authorSurname,
+    public ResponseEntity<List<Book>>getAllBooks(@RequestParam(required = false) String authorSurname,
                                   @RequestParam(required = false) BigDecimal minPrice,
                                   @RequestParam(required = false) BigDecimal maxPrice,
                                   @RequestParam(required = false) String priceOrder){
         List<Book> allBooksList = bookService.findAllBooks(authorSurname, minPrice, maxPrice, priceOrder);
-        return allBooksList;
+        return new ResponseEntity<>(allBooksList, HttpStatus.OK);
     }
 }

@@ -27,6 +27,12 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     @Query("SELECT b FROM Book b WHERE b.price <= :maxPrice ORDER BY b.price ASC")
     List<Book> findByPrice2(BigDecimal maxPrice);
+
+    @Query("SELECT b FROM Book b ORDER BY b.price ASC")
+    List<Book> findByPriceAscPriceOrder(String priceOrder);
+
+    @Query("SELECT b FROM Book b ORDER BY b.price DESC")
+    List<Book> findByPriceDescPriceOrder(String priceOrder);
 }
 
 

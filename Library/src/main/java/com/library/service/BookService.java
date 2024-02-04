@@ -60,6 +60,15 @@ public class BookService {
         else if(authorSurname != null && "DESC".equals(priceOrder)){//pirma string kad neuzluztu kodas
             books = bookRepository.findByAuthorSurnamePriceDesc(authorSurname);
         }
+        else if(authorSurname == null && "ASC".equals(priceOrder)){
+            books = bookRepository.findByPriceAscPriceOrder(priceOrder);
+        }
+        else if(authorSurname == null && "DESC".equals(priceOrder)){
+            books = bookRepository.findByPriceDescPriceOrder(priceOrder);
+        }
+        else if(authorSurname != null && priceOrder == null){
+            books = bookRepository.findByAuthorSurname(authorSurname);
+        }
         else if(minPrice != null && maxPrice == null){
             books = bookRepository.findByPrice1(minPrice);
         }
