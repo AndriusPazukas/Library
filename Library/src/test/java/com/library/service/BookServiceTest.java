@@ -90,6 +90,7 @@ class BookServiceTest {
         verify(bookRepository, times(1)).findById(1);
         verify(bookRepository, times(1)).deleteById(1);
     }
+
     @Test
     void deleteBookDoesNotExists() {
         Optional<Book> bookOptional1 = Optional.empty();

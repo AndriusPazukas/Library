@@ -45,7 +45,7 @@ class BookControllerTest {
         book1= new Book();
         book1.setId(1);
         book1.setTitle("Title1");
-        book1.setAuthor(new Author("Name1","Surname1","DateofBirth", "nationality1"));
+        book1.setAuthor(new Author("Name1","Surname1","DateOfBirth", "nationality1"));
         book1.setPrice(BigDecimal.TEN);
 
     }
@@ -64,7 +64,7 @@ class BookControllerTest {
     }
 
     @Test
-    void postBook() throws Exception{//controlar si es bueno
+    void postBook() throws Exception{
         when(bookService.newBook(book1)).thenReturn(book1);
 
         mvc.perform(post("/api/books")
@@ -86,7 +86,7 @@ class BookControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(bookService).findBook(1);
-        verify(bookService,times(1)).deleteBook(1);//once at BookController, once at BookControllerTest
+        verify(bookService,times(1)).deleteBook(1);
     }
 
     @Test
@@ -101,19 +101,35 @@ class BookControllerTest {
 
     @Test
     void editBook() throws Exception{
-        Book editedBook = new Book("EditedTitle", any(),BigDecimal.valueOf(10.0), 10);
+        Author editedAuthor = new Author("EditedName", "EditedSurname", "EditedDate", "EditedNationality");
+        Book editedBook = new Book("EditedTitle",editedAuthor ,BigDecimal.valueOf(10.0), 10);
         editedBook.setId(1);
+
         when(bookService.findBook(1)).thenReturn(Optional.of(book1));
         when(bookService.editBook(1, book1)).thenReturn(Optional.of(editedBook));
 
         mvc.perform(put("/api/books/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(book1)))//por que book1, y no editedBook
+                        .content(asJsonString(book1)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("EditedTitle"))
                 .andExpect(jsonPath("$.price").value(10.0))
                 .andExpect(jsonPath("$.quantity").value(10));
+
+        verify(bookService).editBook(1, book1);
+
+    }
+    //como puedo provar que metodo editBook functiona?
+    @Test
+    void editBook1() throws Exception{
+        when(bookService.editBook(1, book1)).thenReturn(Optional.of(book1));
+
+        mvc.perform(put("/api/books/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(book1)))
+
+                .andExpect(status().isOk());
 
         verify(bookService).editBook(1, book1);
 
@@ -144,7 +160,7 @@ class BookControllerTest {
 
 
     @Test
-    void getAllBooksByAuthorSurname() throws Exception{//test passed but actualy method return all books in Postman, not only from one Author
+    void getAllBooksByAuthorSurname() throws Exception{
         when(bookService.findAllBooks("Surname1",null, null,null))
                 .thenReturn(books);
 
@@ -153,7 +169,18 @@ class BookControllerTest {
 
         verify(bookService).findAllBooks("Surname1",null, null,null);
     }
-    //tests getAllBooks only test that api is ok, that method doesn't exist/work in bookService or bookRepository they doesn't show?
+
+    @Test
+    void getAllBooksByAuthorSurnamePriceOderASC() throws Exception{
+        when(bookService.findAllBooks("Surname1",null, null,"ASC"))
+                .thenReturn(books);
+
+        mvc.perform(get("/api/books?authorSurname=Surname1&priceOrder=ASC"))
+                .andExpect(status().isOk());
+
+        verify(bookService).findAllBooks("Surname1",null, null,"ASC");
+    }
+
     @Test
     void getAllBooksByPriceOrder() throws Exception{
         when(bookService.findAllBooks(null,null, null,"ASC"))

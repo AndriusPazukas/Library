@@ -45,10 +45,10 @@ public class AuthorController {
     }
     @GetMapping(path = "/authors")
     @ResponseBody
-    public List<Author> getAllAuthors(@RequestParam(required = false) String surname,
+    public ResponseEntity<List<Author>> getAllAuthors(@RequestParam(required = false) String surname,
                                       @RequestParam(required = false) String nationality){
         List<Author> allAuthorsList = authorService.findAllAuthors(surname, nationality);
-        return allAuthorsList;
+        return new ResponseEntity<>(allAuthorsList, HttpStatus.OK);
     }
     @PutMapping(path = "/authors/{id}")
     @ResponseBody
@@ -62,15 +62,15 @@ public class AuthorController {
     }
     @GetMapping(path = "/authors/nationality/{nationality}")
     @ResponseBody
-    public List<Author> getAuthorByNationality1(@PathVariable String nationality){
+    public ResponseEntity <List<Author>> getAuthorByNationality1(@PathVariable String nationality){
         List<Author> authorsByNationality = authorService.findAuthorByNationality1(nationality);
-        return authorsByNationality;
+        return new ResponseEntity<>(authorsByNationality, HttpStatus.OK);
     }
     @GetMapping(path = "/authors/nationalitySurname/{nationality}/{surname}")
     @ResponseBody
-    public List<Author> getAuthorsByNationalityAndSurname(@PathVariable String nationality, @PathVariable String surname){
+    public ResponseEntity <List<Author>> getAuthorsByNationalityAndSurname(@PathVariable String nationality, @PathVariable String surname){
         List<Author> authorServiceAuthorByNationalityAndSurname = authorService.findAuthorByNationalityAndSurname(nationality, surname);
-        return authorServiceAuthorByNationalityAndSurname;
+        return new ResponseEntity<>(authorServiceAuthorByNationalityAndSurname, HttpStatus.OK);
     }
 
 
